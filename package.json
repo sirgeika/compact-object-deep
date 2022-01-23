@@ -1,0 +1,31 @@
+{
+  "name": "compact-object-deep",
+  "version": "1.0.0",
+  "description": "Creates a deep clone of an object with all falsey values removed",
+  "main": "index.js",
+  "files": [
+    "lib",
+    "index.js"
+  ],
+  "repository": {
+    "type": "git"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "keywords": [
+    "compact",
+    "object",
+    "compact-deep"
+  ],
+  "author": "Sergey Ledyankin <sirgeika@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "chai": "4.3.4",
+    "mocha": "9.1.4"
+  },
+  "dependencies": {
+    "lodash.isempty": "4.4.0",
+    "lodash.isobject": "3.0.2"
+  }
+}
