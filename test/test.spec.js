@@ -208,6 +208,74 @@ describe('Compact objects deep', function() {
       expect(result.obj.func2(45)).to.equal(45);
     });
 
+    describe('Clone objects with prototypes', function() {
+      let Foo;
+
+      before(function() {
+        Foo = function(a) {
+          this.a = a;
+          this.b = a + '-b';
+        };
+
+        Foo.prototype.getA = function() {
+          return this.a;
+        };
+
+        Foo.prototype.toObject = function() {
+          return {
+            a: this.getA()
+          };
+        }
+      });
+
+      it('Check instance', function() {
+        const source = {
+          foo: new Foo('test'),
+          empty: false,
+          bar: {
+            b: 'a'
+          }
+        };
+
+        const result = compactDeep(source, function(val) {
+          if (val instanceof Foo) {
+            return val.toObject();
+          }
+        });
+
+        expect(result).to.deep.equal({
+          foo: {
+            a: 'test'
+          },
+          bar: {
+            b: 'a'
+          }
+        });
+      });
+
+      it('Without customizer', function() {
+        const source = {
+          foo: new Foo('test'),
+          empty: false,
+          bar: {
+            b: 'a'
+          }
+        };
+
+        const result = compactDeep(source);
+
+        expect(result).to.deep.equal({
+          foo: {
+            a: 'test',
+            b: 'test-b'
+          },
+          bar: {
+            b: 'a'
+          }
+        });
+      });
+    });
+
     describe('Check paths', function() {
       it('Array paths', function() {
         const source = [
