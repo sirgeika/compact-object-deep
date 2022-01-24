@@ -8,7 +8,8 @@
     "index.js"
   ],
   "repository": {
-    "type": "git"
+    "type": "git",
+    "url": "git@github.com:sirgeika/compact-object-deep.git"
   },
   "scripts": {
     "test": "mocha"
