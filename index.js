@@ -5,10 +5,12 @@ const isObject = require('lodash.isobject');
 
 const setObjectValue = function(object, path, value) {
   object[path] = value;
+  return object;
 };
 
 const setArrayValue = function(array, path, value) {
   array.push(value);
+  return array;
 };
 
 const defineSetter = function(value) {
@@ -63,7 +65,7 @@ const definePathGetter = function(value) {
   };
 };
 
-const compact = function(obj, customizer, path='') {
+const compact = function(obj={}, customizer=() => {}, path='') {
 
   const collection = defineCollection(obj);
   const initialValue = defineInitialValue(obj);
@@ -71,30 +73,25 @@ const compact = function(obj, customizer, path='') {
   const getter = defineGetter(obj);
   const pathGetter = definePathGetter(obj);
 
-  return collection.reduce(function(res, keyValue, index) {
+  return collection.reduce(function(result, keyValue, index) {
     const localPath = path + (path ? '.' : '') + pathGetter(keyValue, index);
     const sourceVal = getter(keyValue);
 
-    let customVal;
-    if (typeof customizer === 'function') {
-      customVal = customizer(sourceVal, keyValue, localPath, obj);
+    let customizedVal = customizer(sourceVal, keyValue, localPath, obj);
+    if (typeof customizedVal !== 'undefined') {
+      return setter(result, keyValue, customizedVal);
     }
 
-    if (customVal !== undefined) {
-      setter(res, keyValue, customVal);
-    } else {
-      if (!isEmpty(sourceVal)) {
-        let tmp = sourceVal;
-        if (isObject(tmp)) {
-          tmp = compact(tmp, customizer, localPath);
-        }
-        if (!isEmpty(tmp)) {
-          setter(res, keyValue, tmp);
-        }
+    if (!isEmpty(sourceVal)) {
+      let tmp = sourceVal;
+      if (isObject(tmp)) {
+        tmp = compact(tmp, customizer, localPath);
+      }
+      if (!isEmpty(tmp)) {
+        setter(result, keyValue, tmp);
       }
     }
-
-    return res;
+    return result;
   }, initialValue);
 };
 
