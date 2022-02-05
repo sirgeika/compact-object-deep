@@ -19,7 +19,8 @@ describe('Compact objects deep', function() {
       five: undefined,
       six: 0,
       seven: false,
-      eight: true
+      eight: true,
+      nan: NaN
     };
 
     const result = compactDeep(source);
